@@ -212,7 +212,7 @@
 							"script": {
 								"exec": [
 									"var jsonData = JSON.parse(responseBody);\r",
-									"const responsedata = jsonData.find(rid => rid.name === pm.environment.get('partner-kc-userrole'))\r",
+									"const responsedata = jsonData.find(rid => rid.name === pm.environment.get('partner-kc-user-role'))\r",
 									"console.log(responsedata);\r",
 									"var roleid = responsedata.id;\r",
 									"console.log(roleid);\r",
@@ -919,6 +919,17 @@
 								],
 								"type": "text/javascript"
 							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);\r",
+									"console.log(jsonData.response.token);\r",
+									"pm.environment.set(\"partner-admin-token\", jsonData.response.token);"
+								],
+								"type": "text/javascript"
+							}
 						}
 					],
 					"request": {
@@ -936,7 +947,7 @@
 							"raw": "{\n  \"id\": \"\",\n  \"version\": \"LTS\",\n  \"requesttime\":\"{{requesttime}}\",\n  \"metadata\": {},\n  \"request\": {\n    \"userName\":\"{{admin-username}}\",\n    \"password\":\"{{admin-password}}\",\n    \"appId\":\"{{application-id}}\",\n    \"clientId\":\"mosip-partner-client\",\n    \"clientSecret\":\"{{mosip-partner-client-secret}}\"\n  }\n}"
 						},
 						"url": {
-							"raw": "{{url}}/v1/authmanager/authenticate/useridPwd",
+							"raw": "{{url}}/v1/authmanager/authenticate/internal/useridPwd",
 							"host": [
 								"{{url}}"
 							],
@@ -944,6 +955,7 @@
 								"v1",
 								"authmanager",
 								"authenticate",
+								"internal",
 								"useridPwd"
 							]
 						}
@@ -967,6 +979,26 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "Authorization={{partner-admin-token}}",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "Cookie",
+									"type": "string"
+								},
+								{
+									"key": "in",
+									"value": "header",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -1008,6 +1040,26 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "Authorization={{partner-admin-token}}",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "Cookie",
+									"type": "string"
+								},
+								{
+									"key": "in",
+									"value": "header",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -1048,6 +1100,26 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "Authorization={{partner-admin-token}}",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "Cookie",
+									"type": "string"
+								},
+								{
+									"key": "in",
+									"value": "header",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -1092,6 +1164,26 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "Authorization={{partner-admin-token}}",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "Cookie",
+									"type": "string"
+								},
+								{
+									"key": "in",
+									"value": "header",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -1139,6 +1231,26 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "Authorization={{partner-admin-token}}",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "Cookie",
+									"type": "string"
+								},
+								{
+									"key": "in",
+									"value": "header",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
 						"header": [],
 						"body": {
@@ -1182,6 +1294,26 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "Authorization={{partner-admin-token}}",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "Cookie",
+									"type": "string"
+								},
+								{
+									"key": "in",
+									"value": "header",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
 						"header": [],
 						"body": {
@@ -1233,6 +1365,26 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "Authorization={{partner-admin-token}}",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "Cookie",
+									"type": "string"
+								},
+								{
+									"key": "in",
+									"value": "header",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
 						"header": [],
 						"body": {
@@ -1279,6 +1431,26 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "Authorization={{partner-admin-token}}",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "Cookie",
+									"type": "string"
+								},
+								{
+									"key": "in",
+									"value": "header",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
 						"header": [],
 						"body": {
@@ -1308,6 +1480,26 @@
 				{
 					"name": "upload-signed-leaf-certifcate-to-keymanager",
 					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "Authorization={{partner-admin-token}}",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "Cookie",
+									"type": "string"
+								},
+								{
+									"key": "in",
+									"value": "header",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
 						"header": [],
 						"body": {
@@ -1361,6 +1553,26 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "Authorization={{partner-admin-token}}",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "Cookie",
+									"type": "string"
+								},
+								{
+									"key": "in",
+									"value": "header",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
 						"header": [],
 						"body": {
