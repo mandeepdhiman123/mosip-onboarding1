@@ -1,7 +1,7 @@
 {
 	"info": {
 		"_postman_id": "fe5ada00-e755-4b49-851e-dffff416025a",
-		"name": "partner_onboarding",
+		"name": "onboarding",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -297,10 +297,10 @@
 			]
 		},
 		{
-			"name": "create_partner_policy_and_policy_group",
+			"name": "create/publish_policy_group_and_policy",
 			"item": [
 				{
-					"name": "authentication-as-partner-manager/global-admin",
+					"name": "authenticate-as-policy-manager",
 					"event": [
 						{
 							"listen": "prerequest",
@@ -316,9 +316,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"var jsonData = JSON.parse(responseBody);\r",
-									"console.log(jsonData.response.token);\r",
-									"pm.environment.set(\"partner-admin-token\", jsonData.response.token);"
+									""
 								],
 								"type": "text/javascript"
 							}
@@ -336,10 +334,10 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"id\": \"\",\n    \"version\": \"LTS\",\n    \"requesttime\": \"2022-03-25T08:33:39.713Z\",\n    \"metadata\": {},\n    \"request\": {\n        \"userName\": \"{{admin-username}}\",\n        \"password\": \"{{admin-password}}\",\n        \"appId\": \"{{application-id}}\",\n        \"clientId\": \"mosip-admin-client\",\n        \"clientSecret\": \"{{mosip-admin-client-secret}}\"\n    }\n}"
+							"raw": "{\n  \"id\": \"\",\n  \"version\": \"LTS\",\n  \"requesttime\":\"{{requesttime}}\",\n  \"metadata\": {},\n  \"request\": {\n    \"userName\":\"{{partner-manager-username}}\",\n    \"password\":\"{{partner-manager-password}}\",\n    \"appId\":\"{{application-id}}\"\n  }\n}"
 						},
 						"url": {
-							"raw": "{{url}}/v1/authmanager/authenticate/internal/useridPwd",
+							"raw": "{{url}}/v1/authmanager/authenticate/useridPwd",
 							"host": [
 								"{{url}}"
 							],
@@ -347,7 +345,6 @@
 								"v1",
 								"authmanager",
 								"authenticate",
-								"internal",
 								"useridPwd"
 							]
 						}
@@ -382,26 +379,6 @@
 						}
 					],
 					"request": {
-						"auth": {
-							"type": "apikey",
-							"apikey": [
-								{
-									"key": "value",
-									"value": "Authorization={{partner-admin-token}}",
-									"type": "string"
-								},
-								{
-									"key": "key",
-									"value": "Cookie",
-									"type": "string"
-								},
-								{
-									"key": "in",
-									"value": "header",
-									"type": "string"
-								}
-							]
-						},
 						"method": "POST",
 						"header": [],
 						"body": {
@@ -460,26 +437,6 @@
 						}
 					],
 					"request": {
-						"auth": {
-							"type": "apikey",
-							"apikey": [
-								{
-									"key": "value",
-									"value": "Authorization={{partner-admin-token}}",
-									"type": "string"
-								},
-								{
-									"key": "key",
-									"value": "Cookie",
-									"type": "string"
-								},
-								{
-									"key": "in",
-									"value": "header",
-									"type": "string"
-								}
-							]
-						},
 						"method": "POST",
 						"header": [],
 						"body": {
@@ -508,26 +465,6 @@
 				{
 					"name": "publish-policy-and-policy-group",
 					"request": {
-						"auth": {
-							"type": "apikey",
-							"apikey": [
-								{
-									"key": "value",
-									"value": "Authorization={{partner-admin-token}}",
-									"type": "string"
-								},
-								{
-									"key": "key",
-									"value": "Cookie",
-									"type": "string"
-								},
-								{
-									"key": "in",
-									"value": "header",
-									"type": "string"
-								}
-							]
-						},
 						"method": "POST",
 						"header": [],
 						"url": {
@@ -557,10 +494,19 @@
 					"name": "authenticate-as-partner",
 					"event": [
 						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
 							"listen": "prerequest",
 							"script": {
 								"exec": [
-									"postman.setEnvironmentVariable('requesttime', (new Date()).toISOString());"
+									""
 								],
 								"type": "text/javascript"
 							}
@@ -568,17 +514,15 @@
 					],
 					"request": {
 						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"type": "text",
-								"value": "application/json"
-							}
-						],
+						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"id\": \"string\",\n  \"version\": \"string\",\n  \"requesttime\": \"{{requesttime}}\",\n  \"metadata\": {},\n  \"request\": {\n    \"userName\": \"{{partner-kc-username}}\",\n    \"password\": \"{{partner-kc-userpassword}}\",\n    \"appId\": \"partner\"\n  }\n}"
+							"raw": "{\r\n  \"id\": \"string\",\r\n  \"version\": \"string\",\r\n  \"requesttime\": \"{{requesttime}}\",\r\n  \"metadata\": {},\r\n  \"request\": {\r\n    \"userName\": \"{{partner-kc-username}}\",\r\n    \"password\": \"{{partner-kc-userpassword}}\",\r\n    \"appId\": \"{{application-id}}\"\r\n  }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
 						},
 						"url": {
 							"raw": "{{url}}/v1/authmanager/authenticate/useridPwd",
@@ -602,7 +546,8 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
-									"postman.setEnvironmentVariable('requesttime', (new Date()).toISOString());"
+									"postman.setEnvironmentVariable('requesttime', (new Date()).toISOString());\r",
+									""
 								],
 								"type": "text/javascript"
 							}
@@ -643,22 +588,93 @@
 					},
 					"response": []
 				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
 			]
 		},
 		{
-			"name": "misc",
+			"name": "cert_download",
 			"item": [
 				{
-					"name": "mapping-new-partner-to-policyname",
+					"name": "authenticate-to-download-certs",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test('adding apikeyrequestID',function(){\r",
-									"    const {response} =pm.response.json();\r",
-									"    pm.environment.set('mappingkey',response.mappingkey);\r",
-									"})"
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"id\": \"string\",\r\n  \"metadata\": {},\r\n  \"request\": {\r\n    \"appId\": \"ida\",\r\n    \"clientId\": \"{{cert-manager-username}}\",\r\n    \"secretKey\": \"{{cert-manager-password}}\"\r\n  },\r\n  \"requesttime\": \"{{requesttime}}\",\r\n  \"version\": \"string\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{url}}/v1/authmanager/authenticate/clientidsecretkey",
+							"host": [
+								"{url}}"
+							],
+							"path": [
+								"v1",
+								"authmanager",
+								"authenticate",
+								"clientidsecretkey"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "download-ida-root-certificate",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);\r",
+									"var data = JSON.stringify(jsonData.response.certificate);\r",
+									"const unquoted = data.replace(/\"/g, \"\");\r",
+									"pm.environment.set(\"ca-certificate\", unquoted);\r",
+									"console.log(unquoted);\r",
+									""
 								],
 								"type": "text/javascript"
 							}
@@ -668,6 +684,586 @@
 							"script": {
 								"exec": [
 									"postman.setEnvironmentVariable('requesttime', (new Date()).toISOString());"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/idauthentication/v1/internal/getCertificate?applicationId={{cert-application-id}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"idauthentication",
+								"v1",
+								"internal",
+								"getCertificate"
+							],
+							"query": [
+								{
+									"key": "applicationId",
+									"value": "{{cert-application-id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "download-resident-certificate",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);\r",
+									"var data = JSON.stringify(jsonData.response.certificate);\r",
+									"const unquoted = data.replace(/\"/g, \"\");\r",
+									"console.log(unquoted);\r",
+									"pm.environment.set(\"ca-certificate\",unquoted);\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"postman.setEnvironmentVariable('requesttime', (new Date()).toISOString());"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/v1/keymanager/getCertificate?applicationId={{cert-application-id}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"v1",
+								"keymanager",
+								"getCertificate"
+							],
+							"query": [
+								{
+									"key": "applicationId",
+									"value": "{{cert-application-id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "download-mpartner-default-resident-certificate",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);\r",
+									"var data = JSON.stringify(jsonData.response.certificate);\r",
+									"const unquoted = data.replace(/\"/g, \"\");\r",
+									"console.log(unquoted);\r",
+									"pm.environment.set(\"leaf-certificate\",unquoted);\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"postman.setEnvironmentVariable('requesttime', (new Date()).toISOString());"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/v1/keymanager/getCertificate?applicationId={{cert-application-id}}&referenceId={{cert-reference-id}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"v1",
+								"keymanager",
+								"getCertificate"
+							],
+							"query": [
+								{
+									"key": "applicationId",
+									"value": "{{cert-application-id}}"
+								},
+								{
+									"key": "referenceId",
+									"value": "{{cert-reference-id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "download-ida-cred_service-certificate",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);\r",
+									"var data = JSON.stringify(jsonData.response.certificate);\r",
+									"const unquoted = data.replace(/\"/g, \"\");\r",
+									"console.log(unquoted);\r",
+									"pm.environment.set(\"leaf-certificate\",unquoted);\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"postman.setEnvironmentVariable('requesttime', (new Date()).toISOString());"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/idauthentication/v1/internal/getCertificate?applicationId={{cert-application-id}}&referenceId={{cert-reference-id}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"idauthentication",
+								"v1",
+								"internal",
+								"getCertificate"
+							],
+							"query": [
+								{
+									"key": "applicationId",
+									"value": "{{cert-application-id}}"
+								},
+								{
+									"key": "referenceId",
+									"value": "{{cert-reference-id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "cert_upload",
+			"item": [
+				{
+					"name": "authenticate-to-upload-certs",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"id\": \"string\",\r\n  \"version\": \"string\",\r\n  \"requesttime\": \"{{requesttime}}\",\r\n  \"metadata\": {},\r\n  \"request\": {\r\n    \"userName\": \"{{partner-manager-username}}\",\r\n    \"password\": \"{{partner-manager-password}}\",\r\n    \"appId\": \"{{application-id}}\"\r\n  }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/v1/authmanager/authenticate/useridPwd",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"v1",
+								"authmanager",
+								"authenticate",
+								"useridPwd"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "upload-ca-certificate",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"postman.setEnvironmentVariable('requesttime', (new Date()).toISOString());\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": \"string\",\r\n  \"metadata\": {},\r\n  \"request\": {\r\n    \"certificateData\": \"{{ca-certificate}}\",\r\n    \"partnerDomain\": \"{{partner-domain}}\"\r\n  },\r\n  \"requesttime\": \"{{requesttime}}\",\r\n  \"version\": \"string\"\r\n  }\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/v1/partnermanager/partners/certificate/ca/upload",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"v1",
+								"partnermanager",
+								"partners",
+								"certificate",
+								"ca",
+								"upload"
+							]
+						},
+						"description": "Here It is assumed that the Partner will provide MOSIP with the three certificates, namely ca certificate, intermediate certificate, and partner certificate ."
+					},
+					"response": []
+				},
+				{
+					"name": "upload-intermediate-ca-certificate",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"postman.setEnvironmentVariable('requesttime', (new Date()).toISOString());"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": \"string\",\r\n  \"metadata\": {},\r\n  \"request\": {\r\n    \"certificateData\": \"{{intermediate-cert}}\",\r\n    \"partnerDomain\": \"{{partner-domain}}\"\r\n  },\r\n  \"requesttime\": \"{{requesttime}}\",\r\n  \"version\": \"string\"\r\n  }\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/v1/partnermanager/partners/certificate/ca/upload",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"v1",
+								"partnermanager",
+								"partners",
+								"certificate",
+								"ca",
+								"upload"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "upload-leaf-certificate",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"postman.setEnvironmentVariable('requesttime', (new Date()).toISOString());"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"id\": \"string\",\r\n  \"metadata\": {},\r\n  \"request\": {\r\n    \"certificateData\": \"{{leaf-certificate}}\",\r\n    \"partnerDomain\": \"{{partner-domain}}\",\r\n    \"partnerId\": \"{{partner-kc-username}}\"\r\n \r\n  },\r\n  \"requesttime\": \"{{requesttime}}\",\r\n  \"version\": \"string\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/v1/partnermanager/partners/certificate/upload",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"v1",
+								"partnermanager",
+								"partners",
+								"certificate",
+								"upload"
+							]
+						},
+						"description": "The partner cert will be signed back and shared with the response as well ."
+					},
+					"response": []
+				},
+				{
+					"name": "upload-signed-leaf-certificate",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"\r",
+									"    pm.test(\"Posted Signed certificate\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.errors).to.eql([]);\r",
+									"                     });"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"id\": \"string\",\r\n  \"metadata\": {},\r\n  \"request\": {\r\n    \"applicationId\": \"{{application-id}}\",\r\n    \"certificateData\": {{signed-leaf-certificate}},\r\n    \"referenceId\": \"{{cert-reference-id}}\"\r\n  },\r\n  \"requesttime\": \"2018-12-10T06:12:52.994Z\",\r\n  \"version\": \"string\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/idauthentication/v1/internal/uploadCertificate",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"idauthentication",
+								"v1",
+								"internal",
+								"uploadCertificate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "upload-signed-leaf-certifcate-to-keymanager",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"id\": \"string\",\r\n  \"metadata\": {},\r\n  \"request\": {\r\n    \"applicationId\": \"{{application-id}}\",\r\n    \"certificateData\":{{signed-leaf-certificate}},\r\n    \"referenceId\": \"{{cert-reference-id}}\"\r\n  },\r\n  \"requesttime\": \"{{requesttime}}\",\r\n  \"version\": \"string\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/v1/keymanager/uploadCertificate",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"v1",
+								"keymanager",
+								"uploadCertificate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "upload-other-domain-certificate-to-keymanager",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"\r",
+									"var jsonData = JSON.parse(responseBody);\r",
+									"var jsonData = JSON.stringify(jsonData.errors);\r",
+									"if (jsonData==\"[]\")\r",
+									"{\r",
+									"    pm.test(\"uploaded succesfuuly\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.errors).to.eql([]);\r",
+									"});}\r",
+									"else\r",
+									"{\r",
+									"pm.test(\"Certificate already exists in DB\", function () {\r",
+									"    pm.expect(pm.response.text()).to.include(\"Certificate already exists,no need to reupload \");\r",
+									"});\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"id\": \"string\",\r\n  \"version\": \"string\",\r\n  \"requesttime\": \"{{requesttime}}\",\r\n  \"metadata\": {},\r\n  \"request\": {\r\n    \"applicationId\": \"{{application-id}}\",\r\n    \"referenceId\": \"{{refrence-id}}\",\r\n    \"certificateData\": {{leaf-certificate}}\r\n  }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/v1/keymanager/uploadOtherDomainCertificate",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"v1",
+								"keymanager",
+								"uploadOtherDomainCertificate"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "partner_request_for_mapping_partner_to_policy",
+			"item": [
+				{
+					"name": "authenticate-as-partner_to_request_policy_mapping",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"id\": \"string\",\r\n  \"version\": \"string\",\r\n  \"requesttime\": \"{{requesttime}}\",\r\n  \"metadata\": {},\r\n  \"request\": {\r\n    \"userName\": \"{{partner-kc-username}}\",\r\n    \"password\": \"{{partner-kc-userpassword}}\",\r\n    \"appId\": \"{{application-id}}\"\r\n  }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/v1/authmanager/authenticate/useridPwd",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"v1",
+								"authmanager",
+								"authenticate",
+								"useridPwd"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "partner_request_mapping_to_policyname",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('adding apikeyrequestID',function(){\r",
+									"    const {response} =pm.response.json();\r",
+									"    pm.environment.set('partner-mapping-key',response.mappingkey);\r",
+									"})\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"postman.setEnvironmentVariable('requesttime', (new Date()).toISOString());\r",
+									""
 								],
 								"type": "text/javascript"
 							}
@@ -701,69 +1297,82 @@
 						}
 					},
 					"response": []
-				},
+				}
+			]
+		},
+		{
+			"name": "partner_manager_approval_activity",
+			"item": [
 				{
-					"name": "create-apikey-for-partner",
+					"name": "authenticate-as-partner-manager",
 					"event": [
 						{
-							"listen": "test",
+							"listen": "prerequest",
 							"script": {
 								"exec": [
-									"pm.test('getting apikey',function(){\r",
-									"    const {response} =pm.response.json();\r",
-									"    pm.environment.set('apikey',response.apiKey);\r",
-									"})"
+									"postman.setEnvironmentVariable('requesttime', (new Date()).toISOString());\r",
+									""
 								],
 								"type": "text/javascript"
 							}
 						},
 						{
-							"listen": "prerequest",
+							"listen": "test",
 							"script": {
 								"exec": [
-									"postman.setEnvironmentVariable('requesttime', (new Date()).toISOString());"
+									""
 								],
 								"type": "text/javascript"
 							}
 						}
 					],
 					"request": {
-						"method": "PATCH",
-						"header": [],
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"id\": \"string\",\r\n  \"version\": \"string\",\r\n  \"requesttime\": \"{{requesttime}}\",\r\n  \"metadata\": {},\r\n  \"request\": {\r\n    \"policyName\": \"{{policy-name}}\",\r\n    \"label\": \"{{partner-kc-userid}}\"\r\n  }\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
+							"raw": "{\n  \"id\": \"\",\n  \"version\": \"LTS\",\n  \"requesttime\":\"{{requesttime}}\",\n  \"metadata\": {},\n  \"request\": {\n    \"userName\":\"{{partner-manager-username}}\",\n    \"password\":\"{{partner-manager-password}}\",\n    \"appId\":\"{{application-id}}\"\n  }\n}"
 						},
 						"url": {
-							"raw": "{{url}}/v1/partnermanager/partners/{{partner-kc-username}}/generate/apikey",
+							"raw": "{{url}}/v1/authmanager/authenticate/useridPwd",
 							"host": [
 								"{{url}}"
 							],
 							"path": [
 								"v1",
-								"partnermanager",
-								"partners",
-								"{{partner-kc-username}}",
-								"generate",
-								"apikey"
+								"authmanager",
+								"authenticate",
+								"useridPwd"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "approve-partner-api-key-request",
+					"name": "approve-partner-mapping-to-policy",
 					"event": [
 						{
 							"listen": "prerequest",
 							"script": {
 								"exec": [
-									"postman.setEnvironmentVariable('requesttime', (new Date()).toISOString());"
+									"postman.setEnvironmentVariable('requesttime', (new Date()).toISOString());\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
 								],
 								"type": "text/javascript"
 							}
@@ -782,7 +1391,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{url}}/v1/partnermanager/partners/policy/{{mappingkey}}",
+							"raw": "{{url}}/v1/partnermanager/partners/policy/{{partner-mapping-key}}",
 							"host": [
 								"{{url}}"
 							],
@@ -791,14 +1400,14 @@
 								"partnermanager",
 								"partners",
 								"policy",
-								"{{mappingkey}}"
+								"{{partner-mapping-key}}"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "mapping-credential-type-partner-to-policy",
+					"name": "mapping-partner-to-policy-credential-type",
 					"request": {
 						"method": "POST",
 						"header": [],
@@ -822,7 +1431,7 @@
 					"response": []
 				},
 				{
-					"name": "generate-the-MISP-license-key",
+					"name": "create-the-MISP-license-key-for-partner",
 					"event": [
 						{
 							"listen": "test",
@@ -830,7 +1439,7 @@
 								"exec": [
 									"pm.test('created',function(){\r",
 									"    const {response} =pm.response.json();\r",
-									"    pm.environment.set('misplicensekey',response.licenseKey);\r",
+									"    pm.environment.set('misp-license-key',response.licenseKey);\r",
 									"})"
 								],
 								"type": "text/javascript"
@@ -906,11 +1515,20 @@
 			]
 		},
 		{
-			"name": "cert-download",
+			"name": "request_for_partner_api_key",
 			"item": [
 				{
-					"name": "authenticating-as-partner-manager",
+					"name": "authenticate-as-partner-for-api-key",
 					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
 						{
 							"listen": "prerequest",
 							"script": {
@@ -919,35 +1537,22 @@
 								],
 								"type": "text/javascript"
 							}
-						},
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"var jsonData = JSON.parse(responseBody);\r",
-									"console.log(jsonData.response.token);\r",
-									"pm.environment.set(\"partner-admin-token\", jsonData.response.token);"
-								],
-								"type": "text/javascript"
-							}
 						}
 					],
 					"request": {
 						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"type": "text",
-								"value": "application/json"
-							}
-						],
+						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"id\": \"\",\n  \"version\": \"LTS\",\n  \"requesttime\":\"{{requesttime}}\",\n  \"metadata\": {},\n  \"request\": {\n    \"userName\":\"{{admin-username}}\",\n    \"password\":\"{{admin-password}}\",\n    \"appId\":\"{{application-id}}\",\n    \"clientId\":\"mosip-partner-client\",\n    \"clientSecret\":\"{{mosip-partner-client-secret}}\"\n  }\n}"
+							"raw": "{\r\n  \"id\": \"string\",\r\n  \"version\": \"string\",\r\n  \"requesttime\": \"{{requesttime}}\",\r\n  \"metadata\": {},\r\n  \"request\": {\r\n    \"userName\": \"{{partner-kc-username}}\",\r\n    \"password\": \"{{partner-kc-userpassword}}\",\r\n    \"appId\": \"{{application-id}}\"\r\n  }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
 						},
 						"url": {
-							"raw": "{{url}}/v1/authmanager/authenticate/internal/useridPwd",
+							"raw": "{{url}}/v1/authmanager/authenticate/useridPwd",
 							"host": [
 								"{{url}}"
 							],
@@ -955,7 +1560,6 @@
 								"v1",
 								"authmanager",
 								"authenticate",
-								"internal",
 								"useridPwd"
 							]
 						}
@@ -963,262 +1567,21 @@
 					"response": []
 				},
 				{
-					"name": "download-ida-root-certificate",
+					"name": "request-for-partner-apikey",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
 								"exec": [
-									"var jsonData = JSON.parse(responseBody);\r",
-									"var data = JSON.stringify(jsonData.response.certificate);\r",
-									"console.log(data);\r",
-									"pm.environment.set(\"ca-certificate\",data);"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "apikey",
-							"apikey": [
-								{
-									"key": "value",
-									"value": "Authorization={{partner-admin-token}}",
-									"type": "string"
-								},
-								{
-									"key": "key",
-									"value": "Cookie",
-									"type": "string"
-								},
-								{
-									"key": "in",
-									"value": "header",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{url}}/idauthentication/v1/internal/getCertificate?applicationId={{cert-application-id}}",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"idauthentication",
-								"v1",
-								"internal",
-								"getCertificate"
-							],
-							"query": [
-								{
-									"key": "applicationId",
-									"value": "{{cert-application-id}}"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "download-resident-certificate",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"var jsonData = JSON.parse(responseBody);\r",
-									"var data = JSON.stringify(jsonData.response.certificate);\r",
-									"console.log(data);\r",
-									"pm.environment.set(\"ca-certificate\",data);\r",
+									"pm.test('getting apikey',function(){\r",
+									"    const {response} =pm.response.json();\r",
+									"    pm.environment.set('partner-api-key',response.apiKey);\r",
+									"})\r",
 									""
 								],
 								"type": "text/javascript"
 							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "apikey",
-							"apikey": [
-								{
-									"key": "value",
-									"value": "Authorization={{partner-admin-token}}",
-									"type": "string"
-								},
-								{
-									"key": "key",
-									"value": "Cookie",
-									"type": "string"
-								},
-								{
-									"key": "in",
-									"value": "header",
-									"type": "string"
-								}
-							]
 						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{url}}/v1/keymanager/getCertificate?applicationId={{cert-application-id}}",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"v1",
-								"keymanager",
-								"getCertificate"
-							],
-							"query": [
-								{
-									"key": "applicationId",
-									"value": "{{cert-application-id}}"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "download-mpartner-default-resident-certificate",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"var jsonData = JSON.parse(responseBody);\r",
-									"var data = JSON.stringify(jsonData.response.certificate);\r",
-									"console.log(data);\r",
-									"pm.environment.set(\"leaf-certificate\",data);\r",
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "apikey",
-							"apikey": [
-								{
-									"key": "value",
-									"value": "Authorization={{partner-admin-token}}",
-									"type": "string"
-								},
-								{
-									"key": "key",
-									"value": "Cookie",
-									"type": "string"
-								},
-								{
-									"key": "in",
-									"value": "header",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{url}}/v1/keymanager/getCertificate?applicationId={{cert-application-id}}&referenceId={{cert-reference-id}}",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"v1",
-								"keymanager",
-								"getCertificate"
-							],
-							"query": [
-								{
-									"key": "applicationId",
-									"value": "{{cert-application-id}}"
-								},
-								{
-									"key": "referenceId",
-									"value": "{{cert-reference-id}}"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "download-ida-cred_service-certificate",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"var jsonData = JSON.parse(responseBody);\r",
-									"var data = JSON.stringify(jsonData.response.certificate);\r",
-									"console.log(data);\r",
-									"pm.environment.set(\"leaf-certificate\",data);\r",
-									"var jsonData = JSON.parse(responseBody);"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "apikey",
-							"apikey": [
-								{
-									"key": "value",
-									"value": "Authorization={{partner-admin-token}}",
-									"type": "string"
-								},
-								{
-									"key": "key",
-									"value": "Cookie",
-									"type": "string"
-								},
-								{
-									"key": "in",
-									"value": "header",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{url}}/idauthentication/v1/internal/getCertificate?applicationId={{cert-application-id}}&referenceId={{cert-reference-id}}",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"idauthentication",
-								"v1",
-								"internal",
-								"getCertificate"
-							],
-							"query": [
-								{
-									"key": "applicationId",
-									"value": "{{cert-application-id}}"
-								},
-								{
-									"key": "referenceId",
-									"value": "{{cert-reference-id}}"
-								}
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "cert-upload",
-			"item": [
-				{
-					"name": "upload-ca-certificate",
-					"event": [
 						{
 							"listen": "prerequest",
 							"script": {
@@ -1231,31 +1594,11 @@
 						}
 					],
 					"request": {
-						"auth": {
-							"type": "apikey",
-							"apikey": [
-								{
-									"key": "value",
-									"value": "Authorization={{partner-admin-token}}",
-									"type": "string"
-								},
-								{
-									"key": "key",
-									"value": "Cookie",
-									"type": "string"
-								},
-								{
-									"key": "in",
-									"value": "header",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
+						"method": "PATCH",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"id\": \"string\",\r\n  \"metadata\": {},\r\n  \"request\": {\r\n    \"certificateData\":{{ca-certificate}},\r\n    \"partnerDomain\": \"{{partner-domain}}\"\r\n  },\r\n  \"requesttime\": \"{{requesttime}}\",\r\n  \"version\": \"string\"\r\n  }\r\n",
+							"raw": "{\r\n  \"id\": \"string\",\r\n  \"version\": \"string\",\r\n  \"requesttime\": \"{{requesttime}}\",\r\n  \"metadata\": {},\r\n  \"request\": {\r\n    \"policyName\": \"{{policy-name}}\",\r\n    \"label\": \"{{partner-kc-userid}}\"\r\n  }\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1263,7 +1606,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{url}}/v1/partnermanager/partners/certificate/ca/upload",
+							"raw": "{{url}}/v1/partnermanager/partners/{{partner-kc-username}}/generate/apikey",
 							"host": [
 								"{{url}}"
 							],
@@ -1271,334 +1614,35 @@
 								"v1",
 								"partnermanager",
 								"partners",
-								"certificate",
-								"ca",
-								"upload"
-							]
-						},
-						"description": "Here It is assumed that the Partner will provide MOSIP with the three certificates, namely ca certificate, intermediate certificate, and partner certificate ."
-					},
-					"response": []
-				},
-				{
-					"name": "upload-intermediate-ca-certificate",
-					"event": [
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									"postman.setEnvironmentVariable('requesttime', (new Date()).toISOString());"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "apikey",
-							"apikey": [
-								{
-									"key": "value",
-									"value": "Authorization={{partner-admin-token}}",
-									"type": "string"
-								},
-								{
-									"key": "key",
-									"value": "Cookie",
-									"type": "string"
-								},
-								{
-									"key": "in",
-									"value": "header",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"id\": \"string\",\r\n  \"metadata\": {},\r\n  \"request\": {\r\n    \"certificateData\":{{intermediate-cert}},\r\n    \"partnerDomain\": \"{{partner-domain}}\"\r\n  },\r\n  \"requesttime\": \"{{requesttime}}\",\r\n  \"version\": \"string\"\r\n  }\r\n",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{url}}/v1/partnermanager/partners/certificate/ca/upload",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"v1",
-								"partnermanager",
-								"partners",
-								"certificate",
-								"ca",
-								"upload"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "upload-leaf-certificate",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									"postman.setEnvironmentVariable('requesttime', (new Date()).toISOString());"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "apikey",
-							"apikey": [
-								{
-									"key": "value",
-									"value": "Authorization={{partner-admin-token}}",
-									"type": "string"
-								},
-								{
-									"key": "key",
-									"value": "Cookie",
-									"type": "string"
-								},
-								{
-									"key": "in",
-									"value": "header",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n  \"id\": \"string\",\r\n  \"metadata\": {},\r\n  \"request\": {\r\n    \"certificateData\":{{leaf-certificate}},\r\n    \"partnerDomain\": \"{{partner-domain}}\",\r\n    \"partnerId\": \"{{partner-kc-username}}\"\r\n \r\n  },\r\n  \"requesttime\": \"{{requesttime}}\",\r\n  \"version\": \"string\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{url}}/v1/partnermanager/partners/certificate/upload",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"v1",
-								"partnermanager",
-								"partners",
-								"certificate",
-								"upload"
-							]
-						},
-						"description": "The partner cert will be signed back and shared with the response as well ."
-					},
-					"response": []
-				},
-				{
-					"name": "upload-signed-leaf-certificate",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"\r",
-									"    pm.test(\"Posted Signed certificate\", function () {\r",
-									"    var jsonData = pm.response.json();\r",
-									"    pm.expect(jsonData.errors).to.eql([]);\r",
-									"                     });"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "apikey",
-							"apikey": [
-								{
-									"key": "value",
-									"value": "Authorization={{partner-admin-token}}",
-									"type": "string"
-								},
-								{
-									"key": "key",
-									"value": "Cookie",
-									"type": "string"
-								},
-								{
-									"key": "in",
-									"value": "header",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n  \"id\": \"string\",\r\n  \"metadata\": {},\r\n  \"request\": {\r\n    \"applicationId\": \"{{application-id}}\",\r\n    \"certificateData\": {{signed-leaf-certificate}},\r\n    \"referenceId\": \"{{cert-reference-id}}\"\r\n  },\r\n  \"requesttime\": \"2018-12-10T06:12:52.994Z\",\r\n  \"version\": \"string\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{url}}/idauthentication/v1/internal/uploadCertificate",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"idauthentication",
-								"v1",
-								"internal",
-								"uploadCertificate"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "upload-signed-leaf-certifcate-to-keymanager",
-					"request": {
-						"auth": {
-							"type": "apikey",
-							"apikey": [
-								{
-									"key": "value",
-									"value": "Authorization={{partner-admin-token}}",
-									"type": "string"
-								},
-								{
-									"key": "key",
-									"value": "Cookie",
-									"type": "string"
-								},
-								{
-									"key": "in",
-									"value": "header",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n  \"id\": \"string\",\r\n  \"metadata\": {},\r\n  \"request\": {\r\n    \"applicationId\": \"{{application-id}}\",\r\n    \"certificateData\":{{signed-leaf-certificate}},\r\n    \"referenceId\": \"{{cert-reference-id}}\"\r\n  },\r\n  \"requesttime\": \"{{requesttime}}\",\r\n  \"version\": \"string\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{url}}/v1/keymanager/uploadCertificate",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"v1",
-								"keymanager",
-								"uploadCertificate"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "upload-other-domain-certificate-to-keymanager",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"\r",
-									"var jsonData = JSON.parse(responseBody);\r",
-									"var jsonData = JSON.stringify(jsonData.errors);\r",
-									"if (jsonData==\"[]\")\r",
-									"{\r",
-									"    pm.test(\"uploaded succesfuuly\", function () {\r",
-									"    var jsonData = pm.response.json();\r",
-									"    pm.expect(jsonData.errors).to.eql([]);\r",
-									"});}\r",
-									"else\r",
-									"{\r",
-									"pm.test(\"Certificate already exists in DB\", function () {\r",
-									"    pm.expect(pm.response.text()).to.include(\"Certificate already exists,no need to reupload \");\r",
-									"});\r",
-									"}"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "apikey",
-							"apikey": [
-								{
-									"key": "value",
-									"value": "Authorization={{partner-admin-token}}",
-									"type": "string"
-								},
-								{
-									"key": "key",
-									"value": "Cookie",
-									"type": "string"
-								},
-								{
-									"key": "in",
-									"value": "header",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n  \"id\": \"string\",\r\n  \"version\": \"string\",\r\n  \"requesttime\": \"{{requesttime}}\",\r\n  \"metadata\": {},\r\n  \"request\": {\r\n    \"applicationId\": \"{{application-id}}\",\r\n    \"referenceId\": \"{{refrence-id}}\",\r\n    \"certificateData\": {{leaf-certificate}}\r\n  }\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{url}}/v1/keymanager/uploadOtherDomainCertificate",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"v1",
-								"keymanager",
-								"uploadOtherDomainCertificate"
+								"{{partner-kc-username}}",
+								"generate",
+								"apikey"
 							]
 						}
 					},
 					"response": []
 				}
 			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"postman.setNextRequest(undefined)"
+				]
+			}
 		}
 	]
 }
