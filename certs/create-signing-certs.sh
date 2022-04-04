@@ -1,31 +1,54 @@
+#!/usr/bin/env bash
 # warning: do not use the certificates produced by this tool in production. This is for testing purposes only
 # This is reference script.
 
-PROP_FILE=../onboarding.properties
+path=$1
+PROP_FILE=./onboarding.properties
 
 function prop {
     grep "${1}" ${PROP_FILE}|cut -d'=' -f2
 }
 
-partner_name=$(prop 'Partner-Name')
+partner_name=$(prop 'partner-kc-username')
+pname=$(echo ${partner_name^})
 country=$(prop 'Country')
 state=$(prop 'State')
 locality=$(prop 'Locality')
-orgnisation=$(prop 'Orgnisation')
-org_unit=$(prop 'Org-Unit')
-common_name=$(prop 'Common-Name')
+orgnisation=$(prop 'partner-kc-username')
+email_id=$(prop 'partner-kc-user-email')
+common_name=$pname
+keystore_passowrd=$(prop 'keystore-passowrd')
 
-# certificate authority
+echo "updating conf"
+sed -i 's/\(^C =\).*/\1 '$country'/' $path/certs/root-openssl.cnf
+sed -i 's/\(^ST =\).*/\1 '$state'/' $path/certs/root-openssl.cnf
+sed -i 's/\(^L =\).*/\1 '$locality'/' $path/certs/root-openssl.cnf
+sed -i 's/\(^O =\).*/\1 '$orgnisation'/' $path/certs/root-openssl.cnf
+sed -i 's/\(^emailAddress =\).*/\1 '$email_id'/' $path/certs/root-openssl.cnf
+sed -i 's/\(^CN =\).*/\1 '$common_name'-Root/' $path/certs/root-openssl.cnf
+
+sed -i 's/\(^C =\).*/\1 '$country'/' $path/certs/client-openssl.cnf
+sed -i 's/\(^ST =\).*/\1 '$state'/' $path/certs/client-openssl.cnf
+sed -i 's/\(^L =\).*/\1 '$locality'/' $path/certs/client-openssl.cnf
+sed -i 's/\(^O =\).*/\1 '$orgnisation'/' $path/certs/client-openssl.cnf
+sed -i 's/\(^emailAddress =\).*/\1 '$email_id'/' $path/certs/client-openssl.cnf
+sed -i 's/\(^CN =\).*/\1 '$common_name'-Client/' $path/certs/client-openssl.cnf
+
+cert_path=$path/certs/$partner_name
+mkdir -p $cert_path
+
+## certificate authority
 echo "==================== Creating CA certificate"
-openssl genrsa -out $partner_name-RootCA.key 2048
-openssl req -new -key $partner_name-RootCA.key -out $partner_name-RootCA.csr
-openssl req -new -x509 -days 3650 -extensions v3_ca -subj "/C='$country'/ST='$state'/L='$locality'/O='$org'/OU='$org_unit'/CN='$common_name'" -key $partner_name-RootCA.key -out $partner_name-RootCA.crt
+openssl genrsa -out $cert_path/$partner_name-RootCA.key 4096
+openssl req -x509 -new -key $cert_path/$partner_name-RootCA.key -sha256 -days 1825 -out $cert_path/$partner_name-RootCA.pem -config $path/certs/root-openssl.cnf
 
-# Partner certificate
+
+##Partner certificate
 echo "==================== Creating partner certificate"
-openssl genrsa -out $partner_name-Partner.key 2048
-openssl req -new -key $partner_name-Partner.key -out $partner_name-Partner.csr
-openssl x509 -req -extensions usr_cert -subj "/C='$country'/ST='$state'/L='$locality'/O='$org'/OU='$org_unit'/CN='$common_name'" -extfile ./openssl.cnf -days 3650 -in $partner_name-Partner.csr -CA $partner_name-RootCA.crt -CAkey $partner_name-RootCA.key -set_serial 04 -out $partner_name-Partner.crt
-openssl verify -CAfile $partner_name-RootCA.crt $partner_name-Partner.crt
-openssl pkcs12 -export -in $partner_name-Partner.crt -inkey $partner_name-Partner.key -out $partner_name-keystore.p12 -name $partner_name
+openssl genrsa -out $cert_path/$partner_name-Client.key 4096
+openssl req -new -key $cert_path/$partner_name-Client.key -out $cert_path/$partner_name-Client.csr -config $path/certs/client-openssl.cnf
+openssl x509 -req -days 1825 -extensions v3_req -extfile $path/certs/client-openssl.cnf -in $cert_path/$partner_name-Client.csr -CA $cert_path/$partner_name-RootCA.pem -CAkey $cert_path/$partner_name-RootCA.key -CAcreateserial -out $cert_path/$partner_name-Client.pem
 
+openssl pkcs12 -export -in $cert_path/$partner_name-Client.pem -inkey $cert_path/$partner_name-Client.key -out $cert_path/$partner_name-keystore.p12 -name $partner_name -password pass:$keystore_passowrd
+
+echo "Cert generation complete"$'\n'

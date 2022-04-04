@@ -306,7 +306,8 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
-									"postman.setEnvironmentVariable('requesttime', (new Date()).toISOString());\r",
+									"pm.globals('requesttime', (new Date()).toISOString());\r",
+									"pm.environment.set('requesttime', (new Date()).toISOString());\r",
 									""
 								],
 								"type": "text/javascript"
@@ -372,7 +373,8 @@
 							"script": {
 								"exec": [
 									"postman.setEnvironmentVariable('requesttime', (new Date()).toISOString());\r",
-									""
+									"pm.globals('requesttime', (new Date()).toISOString());\r",
+									"pm.environment.set('requesttime', (new Date()).toISOString());"
 								],
 								"type": "text/javascript"
 							}
@@ -414,6 +416,8 @@
 							"script": {
 								"exec": [
 									"postman.setEnvironmentVariable('requesttime', (new Date()).toISOString());\r",
+									"pm.globals('requesttime', (new Date()).toISOString());\r",
+									"pm.environment.set('requesttime', (new Date()).toISOString());\r",
 									"const policydata = pm.iterationData.toObject();\r",
 									"console.log(JSON.stringify(policydata));\r",
 									"pm.environment.set('policy-data', JSON.stringify(policydata));\r",
@@ -464,6 +468,18 @@
 				},
 				{
 					"name": "publish-policy-and-policy-group",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.globals('requesttime', (new Date()).toISOString());\r",
+									"pm.environment.set('requesttime', (new Date()).toISOString());"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "POST",
 						"header": [],
@@ -1640,7 +1656,7 @@
 			"script": {
 				"type": "text/javascript",
 				"exec": [
-					"postman.setNextRequest(undefined)"
+					""
 				]
 			}
 		}
