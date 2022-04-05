@@ -92,7 +92,7 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
-									"postman.setEnvironmentVariable('requesttime', (new Date()).toISOString());"
+									""
 								],
 								"type": "text/javascript"
 							}
@@ -157,7 +157,7 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
-									"postman.setEnvironmentVariable('requesttime', (new Date()).toISOString());"
+									""
 								],
 								"type": "text/javascript"
 							}
@@ -211,12 +211,18 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"var jsonData = JSON.parse(responseBody);\r",
-									"const responsedata = jsonData.find(rid => rid.name === pm.environment.get('partner-kc-user-role'))\r",
-									"console.log(responsedata);\r",
-									"var roleid = responsedata.id;\r",
-									"console.log(roleid);\r",
-									"pm.environment.set(\"roleid\",roleid);"
+									"requestarr = [];\r",
+									"var roles = pm.environment.get('partner-kc-user-role');\r",
+									"\r",
+									"pm.test(\"getting multiple roles values\", function () {\r",
+									"  let arr = roles.split(','),\r",
+									"    jsonData = JSON.parse(responseBody);\r",
+									"  arr.forEach((x) => {\r",
+									"      const responsedata = jsonData.find(rid => rid.name === x)\r",
+									"      requestarr.push({id:responsedata.id, name:responsedata.name});\r",
+									"  });\r",
+									"});\r",
+									" pm.environment.set(\"role-body\", JSON.stringify(requestarr));"
 								],
 								"type": "text/javascript"
 							}
@@ -268,7 +274,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "[ \r\n    {\"id\" : \"{{roleid}}\",\r\n   \"name\":\"{{partner-kc-user-role}}\"}\r\n]",
+							"raw": "\r\n  {{role-body}}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -306,8 +312,6 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
-									"pm.globals('requesttime', (new Date()).toISOString());\r",
-									"pm.environment.set('requesttime', (new Date()).toISOString());\r",
 									""
 								],
 								"type": "text/javascript"
@@ -335,7 +339,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"id\": \"\",\n  \"version\": \"LTS\",\n  \"requesttime\":\"{{requesttime}}\",\n  \"metadata\": {},\n  \"request\": {\n    \"userName\":\"{{partner-manager-username}}\",\n    \"password\":\"{{partner-manager-password}}\",\n    \"appId\":\"{{application-id}}\"\n  }\n}"
+							"raw": "{\n  \"id\": \"\",\n  \"version\": \"LTS\",\n  \"requesttime\":\"{{request-time}}\",\n  \"metadata\": {},\n  \"request\": {\n    \"userName\":\"{{partner-manager-username}}\",\n    \"password\":\"{{partner-manager-password}}\",\n    \"appId\":\"{{application-id}}\"\n  }\n}"
 						},
 						"url": {
 							"raw": "{{url}}/v1/authmanager/authenticate/useridPwd",
@@ -372,9 +376,7 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
-									"postman.setEnvironmentVariable('requesttime', (new Date()).toISOString());\r",
-									"pm.globals('requesttime', (new Date()).toISOString());\r",
-									"pm.environment.set('requesttime', (new Date()).toISOString());"
+									""
 								],
 								"type": "text/javascript"
 							}
@@ -385,7 +387,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"id\": \"\",\r\n  \"metadata\": {},\r\n  \"request\": {\r\n    \"desc\":\"PolicyGroup\",\r\n    \"name\":\"{{policy-group-name}}\"\r\n  },\r\n  \"requesttime\": \"{{requesttime}}\",\r\n  \"version\": \"LTS\"\r\n}\r\n",
+							"raw": "{\r\n  \"id\": \"\",\r\n  \"metadata\": {},\r\n  \"request\": {\r\n    \"desc\":\"PolicyGroup\",\r\n    \"name\":\"{{policy-group-name}}\"\r\n  },\r\n  \"requesttime\": \"{{request-time}}\",\r\n  \"version\": \"LTS\"\r\n}\r\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -415,9 +417,6 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
-									"postman.setEnvironmentVariable('requesttime', (new Date()).toISOString());\r",
-									"pm.globals('requesttime', (new Date()).toISOString());\r",
-									"pm.environment.set('requesttime', (new Date()).toISOString());\r",
 									"const policydata = pm.iterationData.toObject();\r",
 									"console.log(JSON.stringify(policydata));\r",
 									"pm.environment.set('policy-data', JSON.stringify(policydata));\r",
@@ -473,8 +472,7 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
-									"pm.globals('requesttime', (new Date()).toISOString());\r",
-									"pm.environment.set('requesttime', (new Date()).toISOString());"
+									""
 								],
 								"type": "text/javascript"
 							}
@@ -533,7 +531,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"id\": \"string\",\r\n  \"version\": \"string\",\r\n  \"requesttime\": \"{{requesttime}}\",\r\n  \"metadata\": {},\r\n  \"request\": {\r\n    \"userName\": \"{{partner-kc-username}}\",\r\n    \"password\": \"{{partner-kc-userpassword}}\",\r\n    \"appId\": \"{{application-id}}\"\r\n  }\r\n}",
+							"raw": "{\r\n  \"id\": \"string\",\r\n  \"version\": \"string\",\r\n  \"requesttime\": \"{{request-time}}\",\r\n  \"metadata\": {},\r\n  \"request\": {\r\n    \"userName\": \"{{partner-kc-username}}\",\r\n    \"password\": \"{{partner-kc-userpassword}}\",\r\n    \"appId\": \"{{application-id}}\"\r\n  }\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -562,7 +560,7 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
-									"postman.setEnvironmentVariable('requesttime', (new Date()).toISOString());\r",
+									"\r",
 									""
 								],
 								"type": "text/javascript"
@@ -583,7 +581,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"id\": \"string\",\r\n  \"metadata\": {},\r\n  \"request\": {\r\n    \"address\": \"{{partner-address}}\",\r\n    \"contactNumber\": \"{{partner-contact}}\",\r\n    \"emailId\": \"{{partner-kc-user-email}}\",\r\n    \"organizationName\": \"{{partner-kc-username}}\",\r\n    \"partnerId\": \"{{partner-kc-username}}\",\r\n    \"partnerType\": \"{{partner-type}}\",\r\n    \"policyGroup\": \"{{policy-group-name}}\"\r\n  },\r\n  \"requesttime\": \"{{requesttime}}\",\r\n  \"version\": \"LTS\"\r\n}",
+							"raw": "{\r\n  \"id\": \"string\",\r\n  \"metadata\": {},\r\n  \"request\": {\r\n    \"address\": \"{{partner-address}}\",\r\n    \"contactNumber\": \"{{partner-contact}}\",\r\n    \"emailId\": \"{{partner-kc-user-email}}\",\r\n    \"organizationName\": \"{{partner-kc-username}}\",\r\n    \"partnerId\": \"{{partner-kc-username}}\",\r\n    \"partnerType\": \"{{partner-type}}\",\r\n    \"policyGroup\": \"{{policy-group-name}}\"\r\n  },\r\n  \"requesttime\": \"{{request-time}}\",\r\n  \"version\": \"LTS\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -656,7 +654,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"id\": \"string\",\r\n  \"metadata\": {},\r\n  \"request\": {\r\n    \"appId\": \"ida\",\r\n    \"clientId\": \"{{cert-manager-username}}\",\r\n    \"secretKey\": \"{{cert-manager-password}}\"\r\n  },\r\n  \"requesttime\": \"{{requesttime}}\",\r\n  \"version\": \"string\"\r\n}",
+							"raw": "{\r\n  \"id\": \"string\",\r\n  \"metadata\": {},\r\n  \"request\": {\r\n    \"appId\": \"ida\",\r\n    \"clientId\": \"{{cert-manager-username}}\",\r\n    \"secretKey\": \"{{cert-manager-password}}\"\r\n  },\r\n  \"requesttime\": \"{{request-time}}\",\r\n  \"version\": \"string\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -679,7 +677,7 @@
 					"response": []
 				},
 				{
-					"name": "download-ida-root-certificate",
+					"name": "download-ida-certificate",
 					"event": [
 						{
 							"listen": "test",
@@ -699,7 +697,7 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
-									"postman.setEnvironmentVariable('requesttime', (new Date()).toISOString());"
+									""
 								],
 								"type": "text/javascript"
 							}
@@ -709,7 +707,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{url}}/idauthentication/v1/internal/getCertificate?applicationId={{cert-application-id}}",
+							"raw": "{{url}}/idauthentication/v1/internal/getCertificate?applicationId={{cert-application-id}}&referenceId={{cert-reference-id}}",
 							"host": [
 								"{{url}}"
 							],
@@ -723,6 +721,10 @@
 								{
 									"key": "applicationId",
 									"value": "{{cert-application-id}}"
+								},
+								{
+									"key": "referenceId",
+									"value": "{{cert-reference-id}}"
 								}
 							]
 						}
@@ -750,7 +752,7 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
-									"postman.setEnvironmentVariable('requesttime', (new Date()).toISOString());"
+									""
 								],
 								"type": "text/javascript"
 							}
@@ -800,7 +802,7 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
-									"postman.setEnvironmentVariable('requesttime', (new Date()).toISOString());"
+									""
 								],
 								"type": "text/javascript"
 							}
@@ -817,61 +819,6 @@
 							"path": [
 								"v1",
 								"keymanager",
-								"getCertificate"
-							],
-							"query": [
-								{
-									"key": "applicationId",
-									"value": "{{cert-application-id}}"
-								},
-								{
-									"key": "referenceId",
-									"value": "{{cert-reference-id}}"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "download-ida-cred_service-certificate",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"var jsonData = JSON.parse(responseBody);\r",
-									"var data = JSON.stringify(jsonData.response.certificate);\r",
-									"const unquoted = data.replace(/\"/g, \"\");\r",
-									"console.log(unquoted);\r",
-									"pm.environment.set(\"leaf-certificate\",unquoted);\r",
-									""
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									"postman.setEnvironmentVariable('requesttime', (new Date()).toISOString());"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{url}}/idauthentication/v1/internal/getCertificate?applicationId={{cert-application-id}}&referenceId={{cert-reference-id}}",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"idauthentication",
-								"v1",
-								"internal",
 								"getCertificate"
 							],
 							"query": [
@@ -920,7 +867,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"id\": \"string\",\r\n  \"version\": \"string\",\r\n  \"requesttime\": \"{{requesttime}}\",\r\n  \"metadata\": {},\r\n  \"request\": {\r\n    \"userName\": \"{{partner-manager-username}}\",\r\n    \"password\": \"{{partner-manager-password}}\",\r\n    \"appId\": \"{{application-id}}\"\r\n  }\r\n}",
+							"raw": "{\r\n  \"id\": \"string\",\r\n  \"version\": \"string\",\r\n  \"requesttime\": \"{{request-time}}\",\r\n  \"metadata\": {},\r\n  \"request\": {\r\n    \"userName\": \"{{partner-manager-username}}\",\r\n    \"password\": \"{{partner-manager-password}}\",\r\n    \"appId\": \"{{application-id}}\"\r\n  }\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -949,7 +896,6 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
-									"postman.setEnvironmentVariable('requesttime', (new Date()).toISOString());\r",
 									""
 								],
 								"type": "text/javascript"
@@ -961,7 +907,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"id\": \"string\",\r\n  \"metadata\": {},\r\n  \"request\": {\r\n    \"certificateData\": \"{{ca-certificate}}\",\r\n    \"partnerDomain\": \"{{partner-domain}}\"\r\n  },\r\n  \"requesttime\": \"{{requesttime}}\",\r\n  \"version\": \"string\"\r\n  }\r\n",
+							"raw": "{\r\n    \"id\": \"string\",\r\n  \"metadata\": {},\r\n  \"request\": {\r\n    \"certificateData\": \"{{ca-certificate}}\",\r\n    \"partnerDomain\": \"{{partner-domain}}\"\r\n  },\r\n  \"requesttime\": \"{{request-time}}\",\r\n  \"version\": \"string\"\r\n  }\r\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -993,7 +939,7 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
-									"postman.setEnvironmentVariable('requesttime', (new Date()).toISOString());"
+									""
 								],
 								"type": "text/javascript"
 							}
@@ -1004,7 +950,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"id\": \"string\",\r\n  \"metadata\": {},\r\n  \"request\": {\r\n    \"certificateData\": \"{{intermediate-cert}}\",\r\n    \"partnerDomain\": \"{{partner-domain}}\"\r\n  },\r\n  \"requesttime\": \"{{requesttime}}\",\r\n  \"version\": \"string\"\r\n  }\r\n",
+							"raw": "{\r\n    \"id\": \"string\",\r\n  \"metadata\": {},\r\n  \"request\": {\r\n    \"certificateData\": \"{{intermediate-cert}}\",\r\n    \"partnerDomain\": \"{{partner-domain}}\"\r\n  },\r\n  \"requesttime\": \"{{request-time}}\",\r\n  \"version\": \"string\"\r\n  }\r\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1044,7 +990,7 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
-									"postman.setEnvironmentVariable('requesttime', (new Date()).toISOString());"
+									""
 								],
 								"type": "text/javascript"
 							}
@@ -1055,7 +1001,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"id\": \"string\",\r\n  \"metadata\": {},\r\n  \"request\": {\r\n    \"certificateData\": \"{{leaf-certificate}}\",\r\n    \"partnerDomain\": \"{{partner-domain}}\",\r\n    \"partnerId\": \"{{partner-kc-username}}\"\r\n \r\n  },\r\n  \"requesttime\": \"{{requesttime}}\",\r\n  \"version\": \"string\"\r\n}",
+							"raw": "{\r\n  \"id\": \"string\",\r\n  \"metadata\": {},\r\n  \"request\": {\r\n    \"certificateData\": \"{{leaf-certificate}}\",\r\n    \"partnerDomain\": \"{{partner-domain}}\",\r\n    \"partnerId\": \"{{partner-kc-username}}\"\r\n \r\n  },\r\n  \"requesttime\": \"{{request-time}}\",\r\n  \"version\": \"string\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1094,6 +1040,15 @@
 								],
 								"type": "text/javascript"
 							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
 						}
 					],
 					"request": {
@@ -1101,7 +1056,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"id\": \"string\",\r\n  \"metadata\": {},\r\n  \"request\": {\r\n    \"applicationId\": \"{{application-id}}\",\r\n    \"certificateData\": {{signed-leaf-certificate}},\r\n    \"referenceId\": \"{{cert-reference-id}}\"\r\n  },\r\n  \"requesttime\": \"2018-12-10T06:12:52.994Z\",\r\n  \"version\": \"string\"\r\n}",
+							"raw": "{\r\n  \"id\": \"string\",\r\n  \"metadata\": {},\r\n  \"request\": {\r\n    \"applicationId\": \"{{application-id}}\",\r\n    \"certificateData\": {{signed-leaf-certificate}},\r\n    \"referenceId\": \"{{cert-reference-id}}\"\r\n  },\r\n  \"requesttime\": \"{{request-time}}\",\r\n  \"version\": \"string\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1125,12 +1080,23 @@
 				},
 				{
 					"name": "upload-signed-leaf-certifcate-to-keymanager",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"id\": \"string\",\r\n  \"metadata\": {},\r\n  \"request\": {\r\n    \"applicationId\": \"{{application-id}}\",\r\n    \"certificateData\":{{signed-leaf-certificate}},\r\n    \"referenceId\": \"{{cert-reference-id}}\"\r\n  },\r\n  \"requesttime\": \"{{requesttime}}\",\r\n  \"version\": \"string\"\r\n}",
+							"raw": "{\r\n  \"id\": \"string\",\r\n  \"metadata\": {},\r\n  \"request\": {\r\n    \"applicationId\": \"{{application-id}}\",\r\n    \"certificateData\":{{signed-leaf-certificate}},\r\n    \"referenceId\": \"{{cert-reference-id}}\"\r\n  },\r\n  \"requesttime\": \"{{request-time}}\",\r\n  \"version\": \"string\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1176,6 +1142,15 @@
 								],
 								"type": "text/javascript"
 							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
 						}
 					],
 					"request": {
@@ -1183,7 +1158,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"id\": \"string\",\r\n  \"version\": \"string\",\r\n  \"requesttime\": \"{{requesttime}}\",\r\n  \"metadata\": {},\r\n  \"request\": {\r\n    \"applicationId\": \"{{application-id}}\",\r\n    \"referenceId\": \"{{refrence-id}}\",\r\n    \"certificateData\": {{leaf-certificate}}\r\n  }\r\n}",
+							"raw": "{\r\n  \"id\": \"string\",\r\n  \"version\": \"string\",\r\n  \"requesttime\": \"{{request-time}}\",\r\n  \"metadata\": {},\r\n  \"request\": {\r\n    \"applicationId\": \"{{application-id}}\",\r\n    \"referenceId\": \"{{refrence-id}}\",\r\n    \"certificateData\": {{leaf-certificate}}\r\n  }\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1236,7 +1211,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"id\": \"string\",\r\n  \"version\": \"string\",\r\n  \"requesttime\": \"{{requesttime}}\",\r\n  \"metadata\": {},\r\n  \"request\": {\r\n    \"userName\": \"{{partner-kc-username}}\",\r\n    \"password\": \"{{partner-kc-userpassword}}\",\r\n    \"appId\": \"{{application-id}}\"\r\n  }\r\n}",
+							"raw": "{\r\n  \"id\": \"string\",\r\n  \"version\": \"string\",\r\n  \"requesttime\": \"{{request-time}}\",\r\n  \"metadata\": {},\r\n  \"request\": {\r\n    \"userName\": \"{{partner-kc-username}}\",\r\n    \"password\": \"{{partner-kc-userpassword}}\",\r\n    \"appId\": \"{{application-id}}\"\r\n  }\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1278,7 +1253,6 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
-									"postman.setEnvironmentVariable('requesttime', (new Date()).toISOString());\r",
 									""
 								],
 								"type": "text/javascript"
@@ -1290,7 +1264,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"id\": \"string\",\r\n  \"metadata\": {},\r\n  \"request\": {\r\n    \"policyName\": \"{{policy-name}}\",\r\n    \"useCaseDescription\": \"mapping partner to policy name\"\r\n  },\r\n  \"requesttime\": \"{{requesttime}}\",\r\n  \"version\": \"string\"\r\n}",
+							"raw": "{\r\n  \"id\": \"string\",\r\n  \"metadata\": {},\r\n  \"request\": {\r\n    \"policyName\": \"{{policy-name}}\",\r\n    \"useCaseDescription\": \"mapping partner to policy name\"\r\n  },\r\n  \"requesttime\": \"{{request-time}}\",\r\n  \"version\": \"string\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1326,7 +1300,6 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
-									"postman.setEnvironmentVariable('requesttime', (new Date()).toISOString());\r",
 									""
 								],
 								"type": "text/javascript"
@@ -1354,7 +1327,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"id\": \"\",\n  \"version\": \"LTS\",\n  \"requesttime\":\"{{requesttime}}\",\n  \"metadata\": {},\n  \"request\": {\n    \"userName\":\"{{partner-manager-username}}\",\n    \"password\":\"{{partner-manager-password}}\",\n    \"appId\":\"{{application-id}}\"\n  }\n}"
+							"raw": "{\n  \"id\": \"\",\n  \"version\": \"LTS\",\n  \"requesttime\":\"{{request-time}}\",\n  \"metadata\": {},\n  \"request\": {\n    \"userName\":\"{{partner-manager-username}}\",\n    \"password\":\"{{partner-manager-password}}\",\n    \"appId\":\"{{application-id}}\"\n  }\n}"
 						},
 						"url": {
 							"raw": "{{url}}/v1/authmanager/authenticate/useridPwd",
@@ -1378,7 +1351,6 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
-									"postman.setEnvironmentVariable('requesttime', (new Date()).toISOString());\r",
 									""
 								],
 								"type": "text/javascript"
@@ -1399,7 +1371,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"id\": \"string\",\r\n  \"metadata\": {},\r\n  \"request\": {\r\n    \"status\": \"Approved\"\r\n  },\r\n  \"requesttime\": \"{{requesttime}}\",\r\n  \"version\": \"string\"\r\n}",
+							"raw": "{\r\n  \"id\": \"string\",\r\n  \"metadata\": {},\r\n  \"request\": {\r\n    \"status\": \"Approved\"\r\n  },\r\n  \"requesttime\": \"{{request-time}}\",\r\n  \"version\": \"string\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1424,6 +1396,17 @@
 				},
 				{
 					"name": "mapping-partner-to-policy-credential-type",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "POST",
 						"header": [],
@@ -1465,7 +1448,7 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
-									"postman.setEnvironmentVariable('requesttime', (new Date()).toISOString());"
+									""
 								],
 								"type": "text/javascript"
 							}
@@ -1476,7 +1459,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"id\": \"string\",\r\n  \"metadata\": {},\r\n  \"request\": {\r\n    \"providerId\": \"{{partner-kc-username}}\"\r\n  },\r\n  \"requesttime\": \"{{requesttime}}\",\r\n  \"version\": \"string\"\r\n}",
+							"raw": "{\r\n  \"id\": \"string\",\r\n  \"metadata\": {},\r\n  \"request\": {\r\n    \"providerId\": \"{{partner-kc-username}}\"\r\n  },\r\n  \"requesttime\": \"{{request-time}}\",\r\n  \"version\": \"string\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1499,12 +1482,23 @@
 				},
 				{
 					"name": "adding-bioextractors-for-partner",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n\t\"id\": \"string\",\r\n\t\"metadata\": {},\r\n\t\"request\": {\r\n\t\t\"extractors\": [{\r\n\t\t\t\t\"attributeName\": \"photo\",\r\n\t\t\t\t\"biometric\": \"face\",\r\n\t\t\t\t\"extractor\": {\r\n\t\t\t\t\t\"provider\": \"t5-face-lowres\",\r\n\t\t\t\t\t\"version\": \"1.1\"\r\n\t\t\t\t}\r\n\t\t\t},\r\n\t\t\t{\r\n\t\t\t\t\"attributeName\": \"face\",\r\n\t\t\t\t\"biometric\": \"face\",\r\n\t\t\t\t\"extractor\": {\r\n\t\t\t\t\t\"provider\": \"dlib\",\r\n\t\t\t\t\t\"version\": \"3.2\"\r\n\t\t\t\t}\r\n\t\t\t}\r\n\t\t]\r\n\t},\r\n\t\"requesttime\": \"{{requesttime}}\",\r\n\t\"version\": \"string\"\r\n}",
+							"raw": "{\r\n\t\"id\": \"string\",\r\n\t\"metadata\": {},\r\n\t\"request\": {\r\n\t\t\"extractors\": [{\r\n\t\t\t\t\"attributeName\": \"photo\",\r\n\t\t\t\t\"biometric\": \"face\",\r\n\t\t\t\t\"extractor\": {\r\n\t\t\t\t\t\"provider\": \"t5-face-lowres\",\r\n\t\t\t\t\t\"version\": \"1.1\"\r\n\t\t\t\t}\r\n\t\t\t},\r\n\t\t\t{\r\n\t\t\t\t\"attributeName\": \"face\",\r\n\t\t\t\t\"biometric\": \"face\",\r\n\t\t\t\t\"extractor\": {\r\n\t\t\t\t\t\"provider\": \"dlib\",\r\n\t\t\t\t\t\"version\": \"3.2\"\r\n\t\t\t\t}\r\n\t\t\t}\r\n\t\t]\r\n\t},\r\n\t\"requesttime\": \"{{request-time}}\",\r\n\t\"version\": \"string\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1560,7 +1554,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"id\": \"string\",\r\n  \"version\": \"string\",\r\n  \"requesttime\": \"{{requesttime}}\",\r\n  \"metadata\": {},\r\n  \"request\": {\r\n    \"userName\": \"{{partner-kc-username}}\",\r\n    \"password\": \"{{partner-kc-userpassword}}\",\r\n    \"appId\": \"{{application-id}}\"\r\n  }\r\n}",
+							"raw": "{\r\n  \"id\": \"string\",\r\n  \"version\": \"string\",\r\n  \"requesttime\": \"{{request-time}}\",\r\n  \"metadata\": {},\r\n  \"request\": {\r\n    \"userName\": \"{{partner-kc-username}}\",\r\n    \"password\": \"{{partner-kc-userpassword}}\",\r\n    \"appId\": \"{{application-id}}\"\r\n  }\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1602,7 +1596,7 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
-									"postman.setEnvironmentVariable('requesttime', (new Date()).toISOString());\r",
+									"\r",
 									""
 								],
 								"type": "text/javascript"
@@ -1614,7 +1608,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"id\": \"string\",\r\n  \"version\": \"string\",\r\n  \"requesttime\": \"{{requesttime}}\",\r\n  \"metadata\": {},\r\n  \"request\": {\r\n    \"policyName\": \"{{policy-name}}\",\r\n    \"label\": \"{{partner-kc-userid}}\"\r\n  }\r\n}",
+							"raw": "{\r\n  \"id\": \"string\",\r\n  \"version\": \"string\",\r\n  \"requesttime\": \"{{request-time}}\",\r\n  \"metadata\": {},\r\n  \"request\": {\r\n    \"policyName\": \"{{policy-name}}\",\r\n    \"label\": \"{{partner-kc-userid}}\"\r\n  }\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"

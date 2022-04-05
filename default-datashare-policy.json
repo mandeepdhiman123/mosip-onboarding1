@@ -2,7 +2,7 @@
     {
     "id": "string",
     "version": "string",
-    "requesttime": "{{requesttime}}",
+    "requesttime": "{{request-time}}",
     "metadata": {},
     "request": {
         "policyId": "",

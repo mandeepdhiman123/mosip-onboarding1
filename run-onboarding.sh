@@ -10,8 +10,10 @@ mkdir -p $(prop 'report_dir') $(prop 'tmp_dir')
 mydir="$(pwd)"
 echo $mydir
 env_temp_file=$(prop 'tmp_dir')
+#get date
 
 function update_props() {
+    date=$(date --utc +%FT%T.%3NZ)
     env_url=$(prop 'env-url')
     keycloak_url=$(prop 'keycloak-url')
     keycloak_admin_username=$(prop 'keycloak-admin-username')
@@ -39,6 +41,7 @@ function update_props() {
     client_cert_path="$mydir/certs/$partner_kc_username/$partner_kc_username-Client.pem"
 #
     echo "Copying properties to env variables."$'\n'
+    jq '.values |= map(if .key=="request-time" then (.value="'$date'") else . end)' onboarding.postman_environment.json > $(prop 'tmp_dir')/tmp.json && mv $(prop 'tmp_dir')/tmp.json onboarding.postman_environment.json
     jq '.values |= map(if .key=="url" then (.value="'$env_url'") else . end)' onboarding.postman_environment.json > $(prop 'tmp_dir')/tmp.json && mv $(prop 'tmp_dir')/tmp.json onboarding.postman_environment.json
     jq '.values |= map(if .key=="keycloak-url" then (.value="'$keycloak_url'") else . end)' onboarding.postman_environment.json > $(prop 'tmp_dir')/tmp.json && mv $(prop 'tmp_dir')/tmp.json onboarding.postman_environment.json
     jq '.values |= map(if .key=="keycloak-admin-username" then (.value="'$keycloak_admin_username'") else . end)' onboarding.postman_environment.json > $(prop 'tmp_dir')/tmp.json && mv $(prop 'tmp_dir')/tmp.json onboarding.postman_environment.json
@@ -98,7 +101,7 @@ function create_partner() {
     bash $mydir/certs/create-signing-certs.sh $mydir
     RootCACert=$(awk 'NF {sub(/\r/, ""); printf "%s\\r\\n",$0;}' $root_cert_path)
     PartnerCert=$(awk 'NF {sub(/\r/, ""); printf "%s\\r\\n",$0;}' $client_cert_path)
-    echo "Starting partner creation" $'\n'
+    echo "Starting Auth Partner Creation" $'\n'
     newman run onboarding.postman_collection.json --delay-request 2000 -e onboarding.postman_environment.json --export-environment $env_temp_file/onboarding.postman_environment.json \
     --folder 'create_keycloak_user' \
     --folder 'create/publish_policy_group_and_policy' \
@@ -122,7 +125,7 @@ function create_partner() {
     bash $mydir/certs/create-signing-certs.sh $mydir
     RootCACert=$(awk 'NF {sub(/\r/, ""); printf "%s\\r\\n",$0;}' $root_cert_path)
     PartnerCert=$(awk 'NF {sub(/\r/, ""); printf "%s\\r\\n",$0;}' $client_cert_path)
-    echo "Starting partner creation" $'\n'
+    echo "Starting Credential Partner Creation" $'\n'
     newman run onboarding.postman_collection.json --delay-request 2000 -e onboarding.postman_environment.json --export-environment $env_temp_file/onboarding.postman_environment.json \
     --folder 'create_keycloak_user' \
     --folder 'create/publish_policy_group_and_policy' \
@@ -146,21 +149,17 @@ function create_partner() {
     bash $mydir/certs/create-signing-certs.sh $mydir
     RootCACert=$(awk 'NF {sub(/\r/, ""); printf "%s\\r\\n",$0;}' $root_cert_path)
     PartnerCert=$(awk 'NF {sub(/\r/, ""); printf "%s\\r\\n",$0;}' $client_cert_path)
-    echo "Starting partner creation" $'\n'
+    echo "Starting MISP Partner Creation" $'\n'
     newman run onboarding.postman_collection.json --delay-request 2000 -e onboarding.postman_environment.json --export-environment $env_temp_file/onboarding.postman_environment.json \
     --folder 'create_keycloak_user' \
-    --folder 'create/publish_policy_group_and_policy' \
     --folder 'partner_self_registration' \
     --folder authenticate-to-upload-certs \
     --env-var ca-certificate="$RootCACert" \
     --env-var leaf-certificate="$PartnerCert" \
     --folder upload-ca-certificate \
     --folder upload-leaf-certificate \
-    --folder 'partner_request_for_mapping_partner_to_policy' \
-    --folder authenticate-as-partner-manager \
-    --folder approve-partner-mapping-to-policy \
-    --folder 'request_for_partner_api_key' \
-    -d default-auth-policy.json -r htmlextra --reporter-htmlextra-export $(prop 'report_dir')/$partner_kc_username.html
+    --folder create-the-MISP-license-key-for-partner \
+    -r htmlextra --reporter-htmlextra-export $(prop 'report_dir')/$partner_kc_username.html
 
     rm $env_temp_file/*
     ;;
@@ -170,144 +169,20 @@ function create_partner() {
     bash $mydir/certs/create-signing-certs.sh $mydir
     RootCACert=$(awk 'NF {sub(/\r/, ""); printf "%s\\r\\n",$0;}' $root_cert_path)
     PartnerCert=$(awk 'NF {sub(/\r/, ""); printf "%s\\r\\n",$0;}' $client_cert_path)
-    echo "Starting partner creation" $'\n'
+    echo "Starting Device Provider Partner Creation" $'\n'
     newman run onboarding.postman_collection.json --delay-request 2000 -e onboarding.postman_environment.json --export-environment $env_temp_file/onboarding.postman_environment.json \
     --folder 'create_keycloak_user' \
-    --folder 'create/publish_policy_group_and_policy' \
     --folder 'partner_self_registration' \
     --folder authenticate-to-upload-certs \
     --env-var ca-certificate="$RootCACert" \
     --env-var leaf-certificate="$PartnerCert" \
     --folder upload-ca-certificate \
     --folder upload-leaf-certificate \
-    --folder 'partner_request_for_mapping_partner_to_policy' \
-    --folder authenticate-as-partner-manager \
-    --folder approve-partner-mapping-to-policy \
-    --folder 'request_for_partner_api_key' \
-    -d default-auth-policy.json -r htmlextra --reporter-htmlextra-export $(prop 'report_dir')/$partner_kc_username.html
+    -r htmlextra --reporter-htmlextra-export $(prop 'report_dir')/$partner_kc_username.html
 
     rm $env_temp_file/*
     ;;
 
-    5)
-    update_props
-    bash $mydir/certs/create-signing-certs.sh $mydir
-    RootCACert=$(awk 'NF {sub(/\r/, ""); printf "%s\\r\\n",$0;}' $root_cert_path)
-    PartnerCert=$(awk 'NF {sub(/\r/, ""); printf "%s\\r\\n",$0;}' $client_cert_path)
-    echo "Starting partner creation" $'\n'
-    newman run onboarding.postman_collection.json --delay-request 2000 -e onboarding.postman_environment.json --export-environment $env_temp_file/onboarding.postman_environment.json \
-    --folder 'create_keycloak_user' \
-    --folder 'create/publish_policy_group_and_policy' \
-    --folder 'partner_self_registration' \
-    --folder authenticate-to-upload-certs \
-    --env-var ca-certificate="$RootCACert" \
-    --env-var leaf-certificate="$PartnerCert" \
-    --folder upload-ca-certificate \
-    --folder upload-leaf-certificate \
-    --folder 'partner_request_for_mapping_partner_to_policy' \
-    --folder authenticate-as-partner-manager \
-    --folder approve-partner-mapping-to-policy \
-    --folder 'request_for_partner_api_key' \
-    -d default-auth-policy.json -r htmlextra --reporter-htmlextra-export $(prop 'report_dir')/$partner_kc_username.html
-
-    rm $env_temp_file/*
-    ;;
-
-    6)
-    update_props
-    bash $mydir/certs/create-signing-certs.sh $mydir
-    RootCACert=$(awk 'NF {sub(/\r/, ""); printf "%s\\r\\n",$0;}' $root_cert_path)
-    PartnerCert=$(awk 'NF {sub(/\r/, ""); printf "%s\\r\\n",$0;}' $client_cert_path)
-    echo "Starting partner creation" $'\n'
-    newman run onboarding.postman_collection.json --delay-request 2000 -e onboarding.postman_environment.json --export-environment $env_temp_file/onboarding.postman_environment.json \
-    --folder 'create_keycloak_user' \
-    --folder 'create/publish_policy_group_and_policy' \
-    --folder 'partner_self_registration' \
-    --folder authenticate-to-upload-certs \
-    --env-var ca-certificate="$RootCACert" \
-    --env-var leaf-certificate="$PartnerCert" \
-    --folder upload-ca-certificate \
-    --folder upload-leaf-certificate \
-    --folder 'partner_request_for_mapping_partner_to_policy' \
-    --folder authenticate-as-partner-manager \
-    --folder approve-partner-mapping-to-policy \
-    --folder 'request_for_partner_api_key' \
-    -d default-auth-policy.json -r htmlextra --reporter-htmlextra-export $(prop 'report_dir')/$partner_kc_username.html
-
-    rm $env_temp_file/*
-    ;;
-
-    7)
-    update_props
-    bash $mydir/certs/create-signing-certs.sh $mydir
-    RootCACert=$(awk 'NF {sub(/\r/, ""); printf "%s\\r\\n",$0;}' $root_cert_path)
-    PartnerCert=$(awk 'NF {sub(/\r/, ""); printf "%s\\r\\n",$0;}' $client_cert_path)
-    echo "Starting partner creation" $'\n'
-    newman run onboarding.postman_collection.json --delay-request 2000 -e onboarding.postman_environment.json --export-environment $env_temp_file/onboarding.postman_environment.json \
-    --folder 'create_keycloak_user' \
-    --folder 'create/publish_policy_group_and_policy' \
-    --folder 'partner_self_registration' \
-    --folder authenticate-to-upload-certs \
-    --env-var ca-certificate="$RootCACert" \
-    --env-var leaf-certificate="$PartnerCert" \
-    --folder upload-ca-certificate \
-    --folder upload-leaf-certificate \
-    --folder 'partner_request_for_mapping_partner_to_policy' \
-    --folder authenticate-as-partner-manager \
-    --folder approve-partner-mapping-to-policy \
-    --folder 'request_for_partner_api_key' \
-    -d default-auth-policy.json -r htmlextra --reporter-htmlextra-export $(prop 'report_dir')/$partner_kc_username.html
-
-    rm $env_temp_file/*
-    ;;
-
-    8)
-    update_props
-    bash $mydir/certs/create-signing-certs.sh $mydir
-    RootCACert=$(awk 'NF {sub(/\r/, ""); printf "%s\\r\\n",$0;}' $root_cert_path)
-    PartnerCert=$(awk 'NF {sub(/\r/, ""); printf "%s\\r\\n",$0;}' $client_cert_path)
-    echo "Starting partner creation" $'\n'
-    newman run onboarding.postman_collection.json --delay-request 2000 -e onboarding.postman_environment.json --export-environment $env_temp_file/onboarding.postman_environment.json \
-    --folder 'create_keycloak_user' \
-    --folder 'create/publish_policy_group_and_policy' \
-    --folder 'partner_self_registration' \
-    --folder authenticate-to-upload-certs \
-    --env-var ca-certificate="$RootCACert" \
-    --env-var leaf-certificate="$PartnerCert" \
-    --folder upload-ca-certificate \
-    --folder upload-leaf-certificate \
-    --folder 'partner_request_for_mapping_partner_to_policy' \
-    --folder authenticate-as-partner-manager \
-    --folder approve-partner-mapping-to-policy \
-    --folder 'request_for_partner_api_key' \
-    -d default-auth-policy.json -r htmlextra --reporter-htmlextra-export $(prop 'report_dir')/$partner_kc_username.html
-
-    rm $env_temp_file/*
-    ;;
-
-    9)
-    update_props
-    bash $mydir/certs/create-signing-certs.sh $mydir
-    RootCACert=$(awk 'NF {sub(/\r/, ""); printf "%s\\r\\n",$0;}' $root_cert_path)
-    PartnerCert=$(awk 'NF {sub(/\r/, ""); printf "%s\\r\\n",$0;}' $client_cert_path)
-    echo "Starting partner creation" $'\n'
-    newman run onboarding.postman_collection.json --delay-request 2000 -e onboarding.postman_environment.json --export-environment $env_temp_file/onboarding.postman_environment.json \
-    --folder 'create_keycloak_user' \
-    --folder 'create/publish_policy_group_and_policy' \
-    --folder 'partner_self_registration' \
-    --folder authenticate-to-upload-certs \
-    --env-var ca-certificate="$RootCACert" \
-    --env-var leaf-certificate="$PartnerCert" \
-    --folder upload-ca-certificate \
-    --folder upload-leaf-certificate \
-    --folder 'partner_request_for_mapping_partner_to_policy' \
-    --folder authenticate-as-partner-manager \
-    --folder approve-partner-mapping-to-policy \
-    --folder 'request_for_partner_api_key' \
-    -d default-auth-policy.json -r htmlextra --reporter-htmlextra-export $(prop 'report_dir')/$partner_kc_username.html
-
-    rm $env_temp_file/*
-    ;;
     esac
 
     echo "Your partner registerd successfully. Please check the report for any issue"$'\n'
