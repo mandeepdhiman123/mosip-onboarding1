@@ -581,7 +581,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"id\": \"string\",\r\n  \"metadata\": {},\r\n  \"request\": {\r\n    \"address\": \"{{partner-address}}\",\r\n    \"contactNumber\": \"{{partner-contact}}\",\r\n    \"emailId\": \"{{partner-kc-user-email}}\",\r\n    \"organizationName\": \"{{partner-kc-username}}\",\r\n    \"partnerId\": \"{{partner-kc-username}}\",\r\n    \"partnerType\": \"{{partner-type}}\",\r\n    \"policyGroup\": \"{{policy-group-name}}\"\r\n  },\r\n  \"requesttime\": \"{{request-time}}\",\r\n  \"version\": \"LTS\"\r\n}",
+							"raw": "{\r\n  \"id\": \"string\",\r\n  \"metadata\": {},\r\n  \"request\": {\r\n    \"address\": \"{{partner-address}}\",\r\n    \"contactNumber\": \"{{partner-contact}}\",\r\n    \"emailId\": \"{{partner-kc-user-email}}\",\r\n    \"organizationName\": \"{{partner-organization-name}}\",\r\n    \"partnerId\": \"{{partner-kc-username}}\",\r\n    \"partnerType\": \"{{partner-type}}\",\r\n    \"policyGroup\": \"{{policy-group-name}}\"\r\n  },\r\n  \"requesttime\": \"{{request-time}}\",\r\n  \"version\": \"LTS\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -643,7 +643,7 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
-									""
+									"pm.environment.set('request-time',  (new Date()).toISOString())"
 								],
 								"type": "text/javascript"
 							}
@@ -662,9 +662,9 @@
 							}
 						},
 						"url": {
-							"raw": "{url}}/v1/authmanager/authenticate/clientidsecretkey",
+							"raw": "{{url}}/v1/authmanager/authenticate/clientidsecretkey",
 							"host": [
-								"{url}}"
+								"{{url}}"
 							],
 							"path": [
 								"v1",
@@ -686,7 +686,12 @@
 									"var jsonData = JSON.parse(responseBody);\r",
 									"var data = JSON.stringify(jsonData.response.certificate);\r",
 									"const unquoted = data.replace(/\"/g, \"\");\r",
-									"pm.environment.set(\"ca-certificate\", unquoted);\r",
+									"if (pm.environment.get('cert-reference-id') == pm.environment.get('partner-kc-username')){\r",
+									"  pm.environment.set(\"leaf-certificate\", unquoted);    \r",
+									"}\r",
+									"else{\r",
+									"  pm.environment.set(\"ca-certificate\", unquoted);\r",
+									"}\r",
 									"console.log(unquoted);\r",
 									""
 								],
@@ -741,7 +746,6 @@
 									"var jsonData = JSON.parse(responseBody);\r",
 									"var data = JSON.stringify(jsonData.response.certificate);\r",
 									"const unquoted = data.replace(/\"/g, \"\");\r",
-									"console.log(unquoted);\r",
 									"pm.environment.set(\"ca-certificate\",unquoted);\r",
 									""
 								],
@@ -791,7 +795,6 @@
 									"var jsonData = JSON.parse(responseBody);\r",
 									"var data = JSON.stringify(jsonData.response.certificate);\r",
 									"const unquoted = data.replace(/\"/g, \"\");\r",
-									"console.log(unquoted);\r",
 									"pm.environment.set(\"leaf-certificate\",unquoted);\r",
 									""
 								],
@@ -981,7 +984,10 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									""
+									"var jsonData = JSON.parse(responseBody);\r",
+									"var data = JSON.stringify(jsonData.response.signedCertificateData);\r",
+									"const unquoted = data.replace(/\"/g, \"\");\r",
+									"pm.environment.set(\"signed-leaf-certificate\",unquoted);"
 								],
 								"type": "text/javascript"
 							}
@@ -1001,7 +1007,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"id\": \"string\",\r\n  \"metadata\": {},\r\n  \"request\": {\r\n    \"certificateData\": \"{{leaf-certificate}}\",\r\n    \"partnerDomain\": \"{{partner-domain}}\",\r\n    \"partnerId\": \"{{partner-kc-username}}\"\r\n \r\n  },\r\n  \"requesttime\": \"{{request-time}}\",\r\n  \"version\": \"string\"\r\n}",
+							"raw": "{\r\n  \"id\": \"string\",\r\n  \"metadata\": {},\r\n  \"request\": {\r\n    \"certificateData\": \"{{leaf-certificate}}\",\r\n    \"partnerDomain\": \"{{partner-domain}}\",\r\n    \"partnerId\": \"{{partner-kc-username}}\"\r\n  },\r\n  \"requesttime\": \"{{request-time}}\",\r\n  \"version\": \"string\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1032,11 +1038,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"\r",
-									"    pm.test(\"Posted Signed certificate\", function () {\r",
-									"    var jsonData = pm.response.json();\r",
-									"    pm.expect(jsonData.errors).to.eql([]);\r",
-									"                     });"
+									""
 								],
 								"type": "text/javascript"
 							}
@@ -1056,7 +1058,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"id\": \"string\",\r\n  \"metadata\": {},\r\n  \"request\": {\r\n    \"applicationId\": \"{{application-id}}\",\r\n    \"certificateData\": {{signed-leaf-certificate}},\r\n    \"referenceId\": \"{{cert-reference-id}}\"\r\n  },\r\n  \"requesttime\": \"{{request-time}}\",\r\n  \"version\": \"string\"\r\n}",
+							"raw": "{\r\n  \"id\": \"string\",\r\n  \"metadata\": {},\r\n  \"request\": {\r\n    \"applicationId\": \"{{cert-application-id}}\",\r\n    \"certificateData\": \"{{signed-leaf-certificate}}\",\r\n    \"referenceId\": \"{{cert-reference-id}}\"\r\n  },\r\n  \"requesttime\": \"{{request-time}}\",\r\n  \"version\": \"string\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1096,7 +1098,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"id\": \"string\",\r\n  \"metadata\": {},\r\n  \"request\": {\r\n    \"applicationId\": \"{{application-id}}\",\r\n    \"certificateData\":{{signed-leaf-certificate}},\r\n    \"referenceId\": \"{{cert-reference-id}}\"\r\n  },\r\n  \"requesttime\": \"{{request-time}}\",\r\n  \"version\": \"string\"\r\n}",
+							"raw": "{\r\n  \"id\": \"string\",\r\n  \"metadata\": {},\r\n  \"request\": {\r\n    \"applicationId\": \"{{cert-application-id}}\",\r\n    \"certificateData\":{{signed-leaf-certificate}},\r\n    \"referenceId\": \"{{cert-reference-id}}\"\r\n  },\r\n  \"requesttime\": \"{{request-time}}\",\r\n  \"version\": \"string\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1124,21 +1126,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"\r",
-									"var jsonData = JSON.parse(responseBody);\r",
-									"var jsonData = JSON.stringify(jsonData.errors);\r",
-									"if (jsonData==\"[]\")\r",
-									"{\r",
-									"    pm.test(\"uploaded succesfuuly\", function () {\r",
-									"    var jsonData = pm.response.json();\r",
-									"    pm.expect(jsonData.errors).to.eql([]);\r",
-									"});}\r",
-									"else\r",
-									"{\r",
-									"pm.test(\"Certificate already exists in DB\", function () {\r",
-									"    pm.expect(pm.response.text()).to.include(\"Certificate already exists,no need to reupload \");\r",
-									"});\r",
-									"}"
+									""
 								],
 								"type": "text/javascript"
 							}
@@ -1158,7 +1146,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"id\": \"string\",\r\n  \"version\": \"string\",\r\n  \"requesttime\": \"{{request-time}}\",\r\n  \"metadata\": {},\r\n  \"request\": {\r\n    \"applicationId\": \"{{application-id}}\",\r\n    \"referenceId\": \"{{refrence-id}}\",\r\n    \"certificateData\": {{leaf-certificate}}\r\n  }\r\n}",
+							"raw": "{\r\n  \"id\": \"string\",\r\n  \"version\": \"string\",\r\n  \"requesttime\": \"{{request-time}}\",\r\n  \"metadata\": {},\r\n  \"request\": {\r\n    \"applicationId\": \"{{cert-application-id}}\",\r\n    \"referenceId\": \"{{cert-reference-id}}\",\r\n    \"certificateData\": {{leaf-certificate}}\r\n  }\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1345,6 +1333,48 @@
 					"response": []
 				},
 				{
+					"name": "adding-bioextractors-for-partner",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"id\": \"string\",\r\n\t\"metadata\": {},\r\n\t\"request\": {\r\n\t\t\"extractors\": [{\r\n\t\t\t\t\"attributeName\": \"photo\",\r\n\t\t\t\t\"biometric\": \"face\",\r\n\t\t\t\t\"extractor\": {\r\n\t\t\t\t\t\"provider\": \"t5-face-lowres\",\r\n\t\t\t\t\t\"version\": \"1.1\"\r\n\t\t\t\t}\r\n\t\t\t},\r\n\t\t\t{\r\n\t\t\t\t\"attributeName\": \"face\",\r\n\t\t\t\t\"biometric\": \"face\",\r\n\t\t\t\t\"extractor\": {\r\n\t\t\t\t\t\"provider\": \"dlib\",\r\n\t\t\t\t\t\"version\": \"3.2\"\r\n\t\t\t\t}\r\n\t\t\t}\r\n\t\t]\r\n\t},\r\n\t\"requesttime\": \"{{request-time}}\",\r\n\t\"version\": \"string\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/v1/partnermanager/partners/{{partner-kc-username}}/bioextractors/{{policy-id}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"v1",
+								"partnermanager",
+								"partners",
+								"{{partner-kc-username}}",
+								"bioextractors",
+								"{{policy-id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "approve-partner-mapping-to-policy",
 					"event": [
 						{
@@ -1475,48 +1505,6 @@
 								"v1",
 								"partnermanager",
 								"misps"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "adding-bioextractors-for-partner",
-					"event": [
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n\t\"id\": \"string\",\r\n\t\"metadata\": {},\r\n\t\"request\": {\r\n\t\t\"extractors\": [{\r\n\t\t\t\t\"attributeName\": \"photo\",\r\n\t\t\t\t\"biometric\": \"face\",\r\n\t\t\t\t\"extractor\": {\r\n\t\t\t\t\t\"provider\": \"t5-face-lowres\",\r\n\t\t\t\t\t\"version\": \"1.1\"\r\n\t\t\t\t}\r\n\t\t\t},\r\n\t\t\t{\r\n\t\t\t\t\"attributeName\": \"face\",\r\n\t\t\t\t\"biometric\": \"face\",\r\n\t\t\t\t\"extractor\": {\r\n\t\t\t\t\t\"provider\": \"dlib\",\r\n\t\t\t\t\t\"version\": \"3.2\"\r\n\t\t\t\t}\r\n\t\t\t}\r\n\t\t]\r\n\t},\r\n\t\"requesttime\": \"{{request-time}}\",\r\n\t\"version\": \"string\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{url}}/v1/partnermanager/partners/{{partner-kc-username}}/bioextractors/{{policy-id}}",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"v1",
-								"partnermanager",
-								"partners",
-								"{{partner-kc-username}}",
-								"bioextractors",
-								"{{policy-id}}"
 							]
 						}
 					},
